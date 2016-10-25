@@ -198,3 +198,45 @@ public class MapDemoActivity extends AppCompatActivity implements
 					"Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
 		}
 	}
+			
+	/*
+     * Called when the Activity becomes visible.
+    */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        connectClient();
+    }
+
+    /*
+	 * Called when the Activity is no longer visible.
+	 */
+	@Override
+	protected void onStop() {
+		// Disconnecting the client invalidates it.
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+		super.onStop();
+	}
+
+	/*
+	 * Handle results returned to the FragmentActivity by Google Play services
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Decide what to do based on the original request code
+		switch (requestCode) {
+
+		case CONNECTION_FAILURE_RESOLUTION_REQUEST:
+			/*
+			 * If the result code is Activity.RESULT_OK, try to connect again
+			 */
+			switch (resultCode) {
+			case Activity.RESULT_OK:
+				mGoogleApiClient.connect();
+				break;
+			}
+
+		}
+	}
