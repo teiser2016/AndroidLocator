@@ -116,3 +116,43 @@ public class MapDemoActivity extends AppCompatActivity implements
 			return false;
 		}
 	}
+			
+	/*
+	 * Called by Location Services when the request to connect the client
+	 * finishes successfully. At this point, you can request the current
+	 * location or start periodic updates
+	 */
+	@Override
+	public void onConnected(Bundle dataBundle) {
+		// Display the connection status
+		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+		if (location != null) {
+			Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
+			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+			currentLocation = location;
+			String strCurrent = Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude());
+
+			TextView displayCurrentLoc = (TextView) findViewById(R.id.textView2);
+			displayCurrentLoc.setText( strCurrent );
+
+			setMarker(currentLocation.getLatitude(), currentLocation.getLongitude(), "Current Location");
+
+			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+			map.animateCamera(cameraUpdate);
+        	} else {
+			Toast.makeText(this, "Current location was null, enable GPS!", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+    	protected void locationUpdate() {
+        	mLocationRequest = new LocationRequest();
+        	mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        	LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    	}
+
+    	public void onLocationChanged(Location location) {
+        	// Report to the UI that the location was updated
+        	String msg = "Current Location: " + Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+        	Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    	}
