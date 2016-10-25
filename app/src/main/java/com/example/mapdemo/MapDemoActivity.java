@@ -45,6 +45,14 @@ public class MapDemoActivity extends AppCompatActivity implements
 	 * Define a request code to send to Google Play services This code is
 	 * returned in Activity.onActivityResult
 	 */
+			
+	//public static ArrayList<Restaurant> restaurantsList= new ArrayList<Restaurant>();
+	Location currentLocation;
+	Restaurant nearestRestaurant;
+	//JSON info
+	String strJSONUrl = "https://gist.githubusercontent.com/diamantoula/8389024a52b99cbd427cc500826c9227/raw/cd006a190e99f619e5942494bd50f34fe79ef656/restaurants";
+	String strJSONArray = "restaurants";
+			
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 	@Override
