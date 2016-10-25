@@ -240,3 +240,45 @@ public class MapDemoActivity extends AppCompatActivity implements
 
 		}
 	}
+			
+	public void searchOnClick(View v){
+		//Button button = (Button) v;
+		//new restaurantsAsyncTask().execute(strJSONUrl);
+		locationUpdate();
+
+		ArrayList<Restaurant> restaurants= new ArrayList<Restaurant>();
+		restaurants.add(new Restaurant(2, "Vlaxos", "Kountouriwtou 12", 41.090189, 23.548197));
+		restaurants.add(new Restaurant(3, "Kapileio tou Kwsti", "Megalou Alexandrou 28", 41.091384, 23.556460));
+		restaurants.add(new Restaurant(4, "Hlias", "Spetswn 6", 41.085495, 23.545296));
+		restaurants.add(new Restaurant(1, "Ellinwn Geuseis", "Makenomaxwn 35", 41.083073, 23.551652));
+		restaurants.add(new Restaurant(5, "Ntomata", "Anapausews 7", 41.098007, 23.554818));
+
+		nearestRestaurant = restaurants.get( findNearestRestaurant(restaurants, currentLocation) );
+		String strNearest = nearestRestaurant.getName() + ", " + nearestRestaurant.getAddress();
+
+		TextView displayNearestRes = (TextView) findViewById(R.id.textView4);
+		displayNearestRes.setText( strNearest );
+
+		setMarker(nearestRestaurant.getLat(), nearestRestaurant.getLng(), strNearest);
+	}
+
+	public int findNearestRestaurant(ArrayList<Restaurant> arrayList, Location currentLoc){
+		//initialize position
+		int pos=0;
+		//initialize compareLoc with 1st element from arrayList
+		Location compareLoc = new Location("");
+		compareLoc.setLatitude(arrayList.get(0).getLat());
+		compareLoc.setLongitude(arrayList.get(0).getLng());
+		//initialize distance, between compareLoc and 1st element
+		float distance = currentLoc.distanceTo(compareLoc);
+
+		for(int i=1; i<arrayList.size(); i++){
+			compareLoc.setLatitude(arrayList.get(i).getLat());
+			compareLoc.setLongitude(arrayList.get(i).getLng());
+			if( currentLoc.distanceTo(compareLoc) < distance ){
+				distance = currentLoc.distanceTo(compareLoc);
+				pos=i;
+			}
+		}
+		return pos;
+	}
