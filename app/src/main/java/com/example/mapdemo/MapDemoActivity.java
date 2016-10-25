@@ -156,3 +156,45 @@ public class MapDemoActivity extends AppCompatActivity implements
         	String msg = "Current Location: " + Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
         	Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     	}
+	
+	/*
+     * Called by Location Services if the connection to the location client
+     * drops because of an error.
+     */
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (i == CAUSE_SERVICE_DISCONNECTED) {
+            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+        } else if (i == CAUSE_NETWORK_LOST) {
+            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+	/*
+	 * Called by Location Services if the attempt to Location Services fails.
+	 */
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		/*
+		 * Google Play services can resolve some errors it detects. If the error
+		 * has a resolution, try sending an Intent to start a Google Play
+		 * services activity that can resolve error.
+		 */
+		if (connectionResult.hasResolution()) {
+			try {
+				// Start an Activity that tries to resolve the error
+				connectionResult.startResolutionForResult(this,
+						CONNECTION_FAILURE_RESOLUTION_REQUEST);
+				/*
+				 * Thrown if Google Play services canceled the original
+				 * PendingIntent
+				 */
+			} catch (IntentSender.SendIntentException e) {
+				// Log the error
+				e.printStackTrace();
+			}
+		} else {
+			Toast.makeText(getApplicationContext(),
+					"Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+		}
+	}
